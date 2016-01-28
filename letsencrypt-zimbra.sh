@@ -49,7 +49,7 @@ IS_UPGRADE=1
 #
 ########
 
-if [ $(which letsencrypt-auto) -ne 0 ]; then
+if [ -z $(which letsencrypt-auto) ]; then
 	if [ ! -x ${LETSENCRYPT} ]; then
 		# Lets Encrypt does not seem to be installed
 		echo "Please install Let's Encrypt before running this script."
