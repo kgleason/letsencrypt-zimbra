@@ -37,9 +37,9 @@ ZIMBRA_ROOT=/opt/zimbra
 ZSTART="/etc/init.d/zimbra start"
 ZSTOP="/etc/init.d/zimbra stop"
 
-#IS_UPGRADE defines which procewss to follow.
+#IS_RENEWAL defines which process to follow.
 #This value will be controlled by CLI parameters, and should not be changed here.
-IS_UPGRADE=1
+IS_RENEWAL=1
 
 
 
@@ -61,14 +61,14 @@ else
 	LETSENCRYPT=$(which letsencrypt-auto)
 fi
 
-while getopts "iud:e:" ARG
+while getopts "nrd:e:" ARG
 do
 	case ${ARG} in
-		i)
-			IS_UPGRADE=0
+		n)
+			IS_RENEWAL=0
 			;;
-		u)
-			IS_UPGRADE=1
+		r)
+			IS_RENEWAL=1
 			;;
 		d)
 			#A dirty hack. Replace all of the commas with the -d that letsencrypt-auto will expect.
@@ -95,7 +95,7 @@ ${ZSTOP}
 
 # Step 2, generate or renew the cert in question
 
-if [ ${IS_UPGRADE} -eq 0 ]; then
+if [ ${IS_RENEWAL} -eq 0 ]; then
 	if [ ! -z ${EMAIL_ADDRESS} ]; then
 		echo "Please use the -e parameter to pass in an email address to use for key recovery."
 		${ZSTART}
