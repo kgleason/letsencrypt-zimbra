@@ -86,7 +86,7 @@ do
 	esac
 done
 
-if [ ! -z ${DOMAIN_STRING} ]; then
+if [ -z ${DOMAIN_STRING} ]; then
 	echo "Please use the -d parameter to pass in a comma separated list of domains."
 	exit 3
 fi
