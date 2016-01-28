@@ -86,7 +86,7 @@ do
 	esac
 done
 
-if [ -z ${DOMAIN_STRING} ]; then
+if [ -z ${DOMAIN_STRING+x} ]; then
 	echo "Please use the -d parameter to pass in a comma separated list of domains."
 	exit 3
 fi
@@ -108,6 +108,7 @@ else
 		cat /var/log/letsencrypt/renew.log
 		${ZSTART}
 		exit 5
+	fi
 fi
 
 # Step 3, create the correct chain file
