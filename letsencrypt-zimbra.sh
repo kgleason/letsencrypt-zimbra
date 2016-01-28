@@ -41,7 +41,9 @@ ZSTOP="/etc/init.d/zimbra stop"
 #This value will be controlled by CLI parameters, and should not be changed here.
 IS_RENEWAL=1
 
-
+#FORCE_RENEWAL will define the default behavior.
+# By default, we will keep the cert until it is expired, and use the -f flag to override this
+RENEWAL_TYPE="keep-until-expiring"
 
 ########
 #
@@ -61,7 +63,7 @@ else
 	LETSENCRYPT=$(which letsencrypt-auto)
 fi
 
-while getopts "nrd:e:" ARG
+while getopts "fnrd:e:" ARG
 do
 	case ${ARG} in
 		n)
@@ -79,6 +81,8 @@ do
 		e)
 			EMAIL_ADDRESS=${OPTARG}
 			;;
+		f)
+			RENEWAL_TYPE="renew-by-default"
 		*)
 			echo "Invalid parameter ${ARG}"
 			exit 2
@@ -103,7 +107,7 @@ if [ ${IS_RENEWAL} -eq 0 ]; then
 	fi
 	${LETSENCRYPT} certonly -d ${DOMAIN_STRING} --email ${EMAIL_ADDRESS} --agree-tos
 else
-	if ! ${LETSENCRYPT} certonly --keep-until-expiring -d ${DOMAIN_STRING} > /var/log/letsencrypt/renew.log 2>&1 ; then
+	if ! ${LETSENCRYPT} certonly --${RENEWAL_TYPE} -d ${DOMAIN_STRING} > /var/log/letsencrypt/renew.log 2>&1 ; then
 		echo "Automated renewal failed:"
 		cat /var/log/letsencrypt/renew.log
 		${ZSTART}
