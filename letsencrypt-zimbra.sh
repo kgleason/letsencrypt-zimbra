@@ -83,6 +83,7 @@ do
 			;;
 		f)
 			RENEWAL_TYPE="renew-by-default"
+			;;
 		*)
 			echo "Invalid parameter ${ARG}"
 			exit 2
@@ -98,6 +99,12 @@ fi
 ${ZSTOP}
 
 # Step 2, generate or renew the cert in question
+
+# Not sure if it is a bug in LE, or something I am doing wrong, but fomr some reason, cert.pem is a real file
+# when it should be a symlink. The following chunk should mitigate that.
+if [ ! -h ${LETSENCRYPT_CONFIG}/live/${PRI_DOMAIN}/cert.pem ]; then
+	rm -f ${LETSENCRYPT_CONFIG}/live/${PRI_DOMAIN}/cert.pem
+	ln -s 
 
 if [ ${IS_RENEWAL} -eq 0 ]; then
 	if [ ! -z ${EMAIL_ADDRESS} ]; then
